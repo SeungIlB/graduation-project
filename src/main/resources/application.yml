@@ -1,4 +1,4 @@
-sever:
+server:
   address: localhost
   port: 8080
 
@@ -18,3 +18,6 @@ spring:
     properties:
       hibernate:
         format_sql: true
+
+jwt:
+  secret: 1776f50389f29f504dcee37aec880b889a6fad8c2dd2c508fd9e2a989af9f52d
