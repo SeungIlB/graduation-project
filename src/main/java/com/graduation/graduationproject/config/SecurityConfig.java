@@ -1,10 +1,11 @@
 package com.graduation.graduationproject.config;
 
+import com.graduation.graduationproject.config.jwt.JwtAuthenticationFilter;
+import com.graduation.graduationproject.config.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
@@ -26,7 +27,7 @@ public class SecurityConfig {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeHttpRequests()
-                .antMatchers("/members/sign-up", "/members/sign-in").permitAll()
+                .antMatchers("/members/sign-up", "/members/log-in").permitAll()
                 // Swagger UI에 대한 접근 허용
                 .antMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-resources/**").permitAll()
                 .antMatchers("/members/test").hasRole("USER")

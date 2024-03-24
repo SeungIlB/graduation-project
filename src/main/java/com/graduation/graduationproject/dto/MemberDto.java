@@ -13,15 +13,19 @@ public class MemberDto {
     private Long id;
     private String username;
     private String name;
+    private int age;
+    private String nickname;
     private String address;
     private String phone;
-    private String profileImg;
+
 
     public static MemberDto toDto(Member member) {
         return MemberDto.builder()
                 .id(member.getId())
                 .username(member.getUsername())
                 .name(member.getName())
+                .age(member.getAge())
+                .nickname(member.getNickname())
                 .address(member.getAddress())
                 .phone(member.getPhone()).build();
     }

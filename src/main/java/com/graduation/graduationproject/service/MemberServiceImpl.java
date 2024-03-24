@@ -1,10 +1,9 @@
 package com.graduation.graduationproject.service;
 
-import com.graduation.graduationproject.config.JwtTokenProvider;
+import com.graduation.graduationproject.config.jwt.JwtTokenProvider;
 import com.graduation.graduationproject.dto.JwtToken;
 import com.graduation.graduationproject.dto.MemberDto;
 import com.graduation.graduationproject.dto.SignUpDto;
-import com.graduation.graduationproject.entity.Member;
 import com.graduation.graduationproject.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -50,7 +49,7 @@ public class MemberServiceImpl implements MemberService{
     @Override
     public MemberDto signUp(SignUpDto signUpDto) {
         if (memberRepository.existsByUsername(signUpDto.getUsername())) {
-            throw new IllegalArgumentException("이미 사용 중인 사용자 이름입니다.");
+            throw new IllegalArgumentException("이미 사용 중인 ID 입니다.");
         }
         // Password 암호화
         String encodedPassword = passwordEncoder.encode(signUpDto.getPassword());

@@ -32,7 +32,15 @@ public class Member implements UserDetails {
     @Column(nullable = false)
     private String password;
 
+    @Column(nullable = false)
     private String name;
+
+    @Column(nullable = false)
+    private int age;
+
+    @Column(nullable = false)
+    private String nickname;
+
 
     private String address; // 도로명 주소
 

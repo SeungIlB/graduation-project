@@ -18,9 +18,10 @@ public class SignUpDto {
     private String username;
     private String password;
     private String name;
+    private int age;
+    private String nickname;
     private String address;
     private String phone;
-    private String profileImg;
     private List<String> roles = new ArrayList<>();
 
     public Member toEntity(String encodedPassword, List<String> roles) {
@@ -29,6 +30,8 @@ public class SignUpDto {
                 .username(username)
                 .password(encodedPassword)
                 .name(name)
+                .age(age)
+                .nickname(nickname)
                 .address(address)
                 .phone(phone)
                 .roles(roles)

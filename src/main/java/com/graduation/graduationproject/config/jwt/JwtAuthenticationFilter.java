@@ -1,4 +1,4 @@
-package com.graduation.graduationproject.config;
+package com.graduation.graduationproject.config.jwt;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;

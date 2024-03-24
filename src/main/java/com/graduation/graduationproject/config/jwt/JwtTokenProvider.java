@@ -1,4 +1,4 @@
-package com.graduation.graduationproject.config;
+package com.graduation.graduationproject.config.jwt;
 
 import com.graduation.graduationproject.dto.JwtToken;
 import io.jsonwebtoken.*;

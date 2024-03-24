@@ -1,4 +1,4 @@
-package com.graduation.graduationproject.config;
+package com.graduation.graduationproject.config.swagger;
 
 
 import com.fasterxml.classmate.MemberResolver;

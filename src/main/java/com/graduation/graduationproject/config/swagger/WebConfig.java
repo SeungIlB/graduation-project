@@ -1,4 +1,4 @@
-package com.graduation.graduationproject.config;
+package com.graduation.graduationproject.config.swagger;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
