@@ -52,7 +52,7 @@ public class MemberServiceImpl implements MemberService{
             throw new IllegalArgumentException("이미 사용 중인 ID 입니다.");
         }
         // Password 암호화
-        String encodedPassword = passwordEncoder.encode(signUpDto.getPassword());
+        String encodedPassword = passwordEncoder.encode(signUpDto.getPassword()); // ?? 이거 해줘야돼나?
         List<String> roles = new ArrayList<>();
         roles.add("USER");  // USER 권한 부여
         return MemberDto.toDto(memberRepository.save(signUpDto.toEntity(encodedPassword, roles)));

@@ -30,7 +30,6 @@ public class SecurityConfig {
                 .antMatchers("/members/sign-up", "/members/log-in").permitAll()
                 // Swagger UI에 대한 접근 허용
                 .antMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-resources/**").permitAll()
-                .antMatchers("/members/test").hasRole("USER")
                 .anyRequest().authenticated()
                 .and()
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class).build();

@@ -46,6 +46,7 @@ public class Member implements UserDetails {
 
     private String phone;
 
+    private String role;
 
 
     @ElementCollection(fetch = FetchType.EAGER)
