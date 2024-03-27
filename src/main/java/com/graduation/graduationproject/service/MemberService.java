@@ -6,6 +6,7 @@ import com.graduation.graduationproject.dto.SignUpDto;
 
 import com.graduation.graduationproject.dto.UpdateDto;
 import com.graduation.graduationproject.entity.Member;
+import com.graduation.graduationproject.controller.ImageUploadController;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;

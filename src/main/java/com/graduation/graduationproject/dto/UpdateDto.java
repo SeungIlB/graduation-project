@@ -21,6 +21,7 @@ public class UpdateDto {
     private String nickname;
     private String address;
     private String phone;
+    private String label;
 
 
 
@@ -34,6 +35,7 @@ public class UpdateDto {
                 .nickname(nickname)
                 .address(address)
                 .phone(phone)
+                .label(label)
                 .build();
     }
 }
