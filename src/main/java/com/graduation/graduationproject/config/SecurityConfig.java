@@ -28,6 +28,7 @@ public class SecurityConfig {
                 .and()
                 .authorizeHttpRequests()
                 .antMatchers("/members/sign-up", "/members/log-in").permitAll()
+                .antMatchers("/").permitAll()
                 // Swagger UI에 대한 접근 허용
                 .antMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-resources/**").permitAll()
                 .anyRequest().authenticated()

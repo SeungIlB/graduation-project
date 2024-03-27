@@ -55,6 +55,9 @@ public class MemberServiceImpl implements MemberService{
         if (memberRepository.existsByUsername(signUpDto.getUsername())) {
             throw new IllegalArgumentException("이미 사용 중인 ID 입니다.");
         }
+        if (memberRepository.existsByNickname(signUpDto.getNickname())){
+            throw new IllegalArgumentException("이미 사용중인 닉네임 입니다.");
+        }
         // Password 암호화
         String encodedPassword = passwordEncoder.encode(signUpDto.getPassword()); // ?? 이거 해줘야돼나?
         List<String> roles = new ArrayList<>();
