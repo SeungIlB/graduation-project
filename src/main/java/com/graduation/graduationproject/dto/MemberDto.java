@@ -18,6 +18,7 @@ public class MemberDto {
     private String nickname;
     private String address;
     private String phone;
+    private String label;
 
 
     public static MemberDto toDto(Member member) {
@@ -29,7 +30,9 @@ public class MemberDto {
                 .age(member.getAge())
                 .nickname(member.getNickname())
                 .address(member.getAddress())
-                .phone(member.getPhone()).build();
+                .phone(member.getPhone())
+                .label(member.getLabel())
+                .build();
     }
 
     public Member toEntity() {
@@ -40,6 +43,8 @@ public class MemberDto {
                 .age(age)
                 .nickname(nickname)
                 .address(address)
-                .phone(phone).build();
+                .phone(phone)
+                .label(label)
+                .build();
     }
 }

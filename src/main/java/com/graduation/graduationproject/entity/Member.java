@@ -46,6 +46,8 @@ public class Member implements UserDetails {
 
     private String phone;
 
+    private String label;
+
 
 
     @ElementCollection(fetch = FetchType.EAGER)
@@ -77,6 +79,5 @@ public class Member implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
-
 
 }
