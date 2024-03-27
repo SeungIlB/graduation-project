@@ -44,11 +44,19 @@ public class MemberController {
 
 
     @PostMapping("/sign-up")
+    @Operation(summary = "회원가입", description = "회원 가입 후 비밀번호 암호화 해서 저장", responses = {
+            @ApiResponse(responseCode = "200", description = "성공", content = @Content(schema = @Schema(implementation = MemberDto.class))),
+            @ApiResponse(responseCode = "403", description = "권한 없음")
+    })
     public ResponseEntity<MemberDto> signUp(@RequestBody SignUpDto signUpDto) {
         MemberDto savedMemberDto = memberService.signUp(signUpDto);
         return ResponseEntity.ok(savedMemberDto);
     }
     @PutMapping("/update/{member_id}")
+    @Operation(summary = "회원 정보 수정", description = "수정하고 싶은 정보를 재입력시 해당 정보 수정", responses = {
+            @ApiResponse(responseCode = "200", description = "성공", content = @Content(schema = @Schema(implementation = MemberDto.class))),
+            @ApiResponse(responseCode = "403", description = "권한 없음")
+    })
     public ResponseEntity<MemberDto> updateMember(@PathVariable Long member_id, @RequestBody UpdateDto updateDto) {
         updateDto.setId(member_id); // 업데이트할 사용자 ID 설정
         MemberDto updatedMemberDto = memberService.update(updateDto);
@@ -56,12 +64,13 @@ public class MemberController {
     }
 
     @DeleteMapping("/delete/{member_id}")
+    @Operation(summary = "회원 삭제", description = "회원 정보 삭제", responses = {
+            @ApiResponse(responseCode = "204", description = "성공, no content - 삭제 후 db에 저장된 값이 없다 라는 뜻", content = @Content(schema = @Schema(implementation = MemberDto.class))),
+            @ApiResponse(responseCode = "403", description = "권한 없음")
+    })
     public ResponseEntity<Void> deleteMember(@PathVariable Long member_id) {
         memberService.deleteMember(member_id);
         return ResponseEntity.noContent().build();
     }
-    @PostMapping("/test")
-    public String test() {
-        return "success";
-    }
+
 }
