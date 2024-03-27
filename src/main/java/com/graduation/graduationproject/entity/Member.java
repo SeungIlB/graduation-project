@@ -8,18 +8,18 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Entity
 @Getter
+@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
 @EqualsAndHashCode(of = "id")
 public class Member implements UserDetails {
+
     @javax.persistence.Id
     @Id
     @GeneratedValue
@@ -36,7 +36,7 @@ public class Member implements UserDetails {
     private String name;
 
     @Column(nullable = false)
-    private int age;
+    private String age;
 
     @Column(nullable = false)
     private String nickname;
@@ -46,7 +46,6 @@ public class Member implements UserDetails {
 
     private String phone;
 
-    private String role;
 
 
     @ElementCollection(fetch = FetchType.EAGER)
@@ -78,5 +77,6 @@ public class Member implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
+
 
 }

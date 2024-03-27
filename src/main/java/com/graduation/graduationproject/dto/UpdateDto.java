@@ -1,20 +1,19 @@
 package com.graduation.graduationproject.dto;
 
+
 import com.graduation.graduationproject.entity.Member;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class SignUpDto {
-
+public class UpdateDto {
+    private Long id;
     private String username;
     private String password;
     private String name;
@@ -22,9 +21,10 @@ public class SignUpDto {
     private String nickname;
     private String address;
     private String phone;
-    private List<String> roles = new ArrayList<>();
 
-    public Member toEntity(String encodedPassword, List<String> roles) {
+
+
+    public Member toEntity(String encodedPassword) {
 
         return Member.builder()
                 .username(username)
@@ -34,7 +34,6 @@ public class SignUpDto {
                 .nickname(nickname)
                 .address(address)
                 .phone(phone)
-                .roles(roles)
                 .build();
     }
 }
