@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Getter
@@ -18,7 +19,7 @@ public class SignUpDto {
     private String username;
     private String password;
     private String name;
-    private String age;
+    private Date age;
     private String nickname;
     private String address;
     private String phone;

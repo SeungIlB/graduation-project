@@ -3,6 +3,8 @@ package com.graduation.graduationproject.dto;
 import com.graduation.graduationproject.entity.Member;
 import lombok.*;
 
+import java.util.Date;
+
 @Getter
 @ToString
 @AllArgsConstructor
@@ -14,7 +16,7 @@ public class MemberDto {
     private String username;
     private String password;
     private String name;
-    private String age;
+    private Date age;
     private String nickname;
     private String address;
     private String phone;

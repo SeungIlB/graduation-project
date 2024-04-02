@@ -36,7 +36,7 @@ public class Member implements UserDetails {
     private String name;
 
     @Column(nullable = false)
-    private String age;
+    private Date age;
 
     @Column(nullable = false)
     private String nickname;
