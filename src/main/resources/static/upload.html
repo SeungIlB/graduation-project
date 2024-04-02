@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Image Upload</title>
+</head>
+<body>
+<h2>Upload Image</h2>
+<form action="/upload" method="post" enctype="multipart/form-data">
+    <input type="file" name="file" accept="image/*">
+    <button type="submit">Upload</button>
+</form>
+
+<h2>Detected Labels</h2>
+<ul>
+    <li th:each="label : ${labels}">${label}</li>
+</ul>
+</body>
+</html>
