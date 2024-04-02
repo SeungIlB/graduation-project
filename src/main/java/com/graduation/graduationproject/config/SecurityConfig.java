@@ -29,7 +29,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests()
                 .antMatchers("/members/sign-up", "/members/log-in").permitAll()
                 .antMatchers("/").permitAll()
-                .antMatchers("/upload","/saveLabel").permitAll()
+                .antMatchers("/upload","/saveLabel").permitAll() // 이부분 추후에 권한있어야 접근 가능하게끔 해야됨 => 로그인 이후에 진행 되어야 하기때문
                 // Swagger UI에 대한 접근 허용
                 .antMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-resources/**").permitAll()
                 .anyRequest().authenticated()
