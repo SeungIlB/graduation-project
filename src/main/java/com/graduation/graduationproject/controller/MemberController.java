@@ -3,7 +3,6 @@ package com.graduation.graduationproject.controller;
 import com.graduation.graduationproject.dto.*;
 import com.graduation.graduationproject.entity.Member;
 import com.graduation.graduationproject.exception.ErrorCode;
-import com.graduation.graduationproject.security.SecurityUtil;
 import com.graduation.graduationproject.service.MemberService;
 import io.swagger.models.Response;
 import io.swagger.v3.oas.annotations.Operation;
