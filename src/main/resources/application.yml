@@ -4,7 +4,7 @@ server:
 
 spring:
   redis:
-    host: localhost # 로컬에서 테스트 할 때는 localhost로 사용
+    host: localhost # ???? ??? ? ?? localhost? ??
     port: 6379
   mvc:
     pathmatch:
@@ -23,7 +23,6 @@ spring:
         format_sql: true
 
 jwt:
-  secret: 1776f50389f29f504dcee37aec880b889a6fad8c2dd2c508fd9e2a989af9f52d
-  accessTokenExpirationMs: 86400000 # 24시간
-  refreshTokenExpirationMs: 604800000 # 7일
-
+  secret: c3ByaW5nYm9vdC1qd3QtdHV0b3JpYWwtc3ByaW5nYm9vdC1qd3QtdHV0b3JpYWwtc3ByaW5nYm9vdC1qd3QtdHV0b3JpYWwK
+  access-token-validity-in-seconds: 86400000 # 24??
+  refresh-token-validity-in-seconds: 604800000 # 7?

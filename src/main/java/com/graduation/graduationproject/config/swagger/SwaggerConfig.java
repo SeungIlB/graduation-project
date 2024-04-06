@@ -2,7 +2,6 @@ package com.graduation.graduationproject.config.swagger;
 
 
 import com.fasterxml.classmate.MemberResolver;
-import com.graduation.graduationproject.dto.MemberDto;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import springfox.documentation.builders.ApiInfoBuilder;
