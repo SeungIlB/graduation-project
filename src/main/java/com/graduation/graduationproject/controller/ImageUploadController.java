@@ -1,5 +1,6 @@
 //package com.graduation.graduationproject.controller;
 //
+//import com.graduation.graduationproject.dto.AuthDto;
 //import com.graduation.graduationproject.service.UserService;
 //import com.graduation.graduationproject.service.VisionService;
 //import org.springframework.beans.factory.annotation.Autowired;
@@ -59,7 +60,7 @@
 //    private UserService memberService;
 //
 //    @PostMapping("/saveLabel")
-//    public ResponseEntity<String> saveLabel(@RequestParam("selectedLabel") String selectedLabel, UpdateDto updateDto) {
+//    public ResponseEntity<String> saveLabel(@RequestParam("selectedLabel") String selectedLabel, AuthDto.UpdateDto updateDto) {
 //        // 사용자가 선택한 라벨을 사용자 정보에 저장
 //        updateDto.setLabel(selectedLabel);
 //

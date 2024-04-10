@@ -1,4 +1,4 @@
-package com.graduation.graduationproject.config.swagger;
+package com.graduation.graduationproject.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.CacheControl;

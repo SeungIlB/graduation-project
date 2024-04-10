@@ -9,6 +9,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.Map;
 
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
@@ -48,8 +49,9 @@ public class AuthApiController {
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE, httpCookie.toString())
                 // AT 저장
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + tokenDto.getAccessToken())
-                .build();
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + tokenDto.getAccessToken()).body(Map.of(
+                        "accessToken", tokenDto.getAccessToken(),
+                        "refreshToken", tokenDto.getRefreshToken()));
     }
     @PutMapping("/update/{userId}")
     public ResponseEntity<String> updateUser(@PathVariable Long userId, @RequestBody AuthDto.UpdateDto updateDto) {
