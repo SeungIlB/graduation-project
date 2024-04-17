@@ -63,7 +63,7 @@ public class ImageUploadController {
 
 
     @PostMapping("/saveLabel/{userId}")
-    public ResponseEntity<String> saveLabel(@RequestParam("selectedLabel")  @PathVariable Long userId, String selectedLabel, AuthDto.UpdateDto updateDto) {
+    public ResponseEntity<String> saveLabel(@RequestParam("selectedLabel")  @PathVariable Long userId, AuthDto.UpdateDto updateDto) {
 
         // 사용자 정보 업데이트 또는 저장 등의 작업 수행
         try {
