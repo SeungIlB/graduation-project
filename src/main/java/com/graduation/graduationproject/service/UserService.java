@@ -33,6 +33,7 @@ public class UserService {
         String newNickname = updateDto.getNickname();
         String newAddress = updateDto.getAddress();
         String newPhone = updateDto.getPhone();
+        String newlabel = updateDto.getLabel();
         // 기타 업데이트할 필드들을 가져오세요.
 
         // 사용자 정보 업데이트
@@ -42,6 +43,7 @@ public class UserService {
         user.setNickname(newNickname);
         user.setAddress(newAddress);
         user.setPhone(newPhone);
+        user.setLabel(newlabel);
 
         userRepository.save(user);
     }
