@@ -7,6 +7,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import static org.springframework.data.jpa.domain.AbstractPersistable_.id;
+
 public class UserDetailsImpl implements UserDetails {
 
     private final User user;
@@ -53,5 +55,10 @@ public class UserDetailsImpl implements UserDetails {
     @Override
     public boolean isEnabled() { // 계정의 활성화 여부
         return true;
+    }
+
+
+    public Long getId() {
+        return user.getId();
     }
 }

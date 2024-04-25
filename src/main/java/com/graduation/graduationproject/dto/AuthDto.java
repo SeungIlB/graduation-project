@@ -1,8 +1,11 @@
 package com.graduation.graduationproject.dto;
 
+import com.graduation.graduationproject.entity.Label;
+import com.graduation.graduationproject.entity.User;
 import lombok.*;
 
 import java.util.Date;
+import java.util.List;
 
 public class AuthDto {
 
@@ -29,7 +32,6 @@ public class AuthDto {
         private Date birthdate;
         private String address;
         private String phone;
-        private String label;
 
         @Builder
         public SignupDto(String username, String password) {
@@ -76,15 +78,13 @@ public class AuthDto {
         private String label;
 
         @Builder
-        public UpdateDto(String username, String password, String name, String nickname, Date birthdate, String address, String phone, String label) {
+        public UpdateDto(String username, String password, String name, String nickname, Date birthdate, String address, String phone) {
             this.username = username;
             this.password = password;
             this.name = name;
             this.nickname = nickname;
             this.birthdate = birthdate;
             this.address = address;
-            this.phone = phone;
-            this.label = label;
-        }
+            this.phone = phone;}
     }
 }

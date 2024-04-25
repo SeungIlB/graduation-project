@@ -1,10 +1,14 @@
 package com.graduation.graduationproject.controller;
 
 import com.graduation.graduationproject.dto.AuthDto;
+import com.graduation.graduationproject.entity.User;
+import com.graduation.graduationproject.repository.UserDetailsImpl;
 import com.graduation.graduationproject.service.AuthService;
 import com.graduation.graduationproject.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.*;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -130,5 +134,27 @@ public class AuthApiController {
                 .status(HttpStatus.OK)
                 .header(HttpHeaders.SET_COOKIE, responseCookie.toString())
                 .build();
+    }
+
+    @GetMapping("/mypage/{userId}")
+    public ResponseEntity<?> loadMyPage(@PathVariable Long userId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        // 현재 로그인한 사용자의 ID 가져오기
+        Long loggedInUserId = userService.getLoggedInUserId(userDetails);
+
+        // 요청한 사용자와 현재 로그인한 사용자의 ID가 일치하지 않는 경우 권한이 없는 것으로 처리
+        if (!userId.equals(loggedInUserId)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        // userId를 이용하여 사용자 정보를 데이터베이스에서 조회합니다.
+        User user = userService.getUserById(userId);
+
+        // 사용자 정보가 존재하지 않는 경우 404 에러를 반환합니다.
+        if (user == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        // 사용자 정보가 존재하는 경우 해당 정보를 반환합니다.
+        return ResponseEntity.ok(user);
     }
 }
