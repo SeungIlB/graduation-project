@@ -1,30 +1,41 @@
 package com.graduation.graduationproject.controller;
 
-import com.graduation.graduationproject.dto.AuthDto;
+
+import com.graduation.graduationproject.dto.LabelDto;
+import com.graduation.graduationproject.entity.Label;
+import com.graduation.graduationproject.entity.User;
+import com.graduation.graduationproject.repository.LabelRepository;
+import com.graduation.graduationproject.service.LabelService;
 import com.graduation.graduationproject.service.UserService;
 import com.graduation.graduationproject.service.VisionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.security.Principal;
 import java.util.List;
 
-@Controller
+@RestController
 public class ImageUploadController {
 
     private final VisionService googleVisionService;
     @Autowired
     private UserService userService;
+
     private final BCryptPasswordEncoder encoder;
+
+    @Autowired
+    private LabelService labelService;
+    private LabelRepository labelRepository;
 
     @Autowired
     public ImageUploadController(VisionService googleVisionService, BCryptPasswordEncoder encoder) {
@@ -33,7 +44,7 @@ public class ImageUploadController {
     }
 
     @GetMapping("/upload")
-    public String upload(){
+    public String upload() {
         return "upload.html";
     }
 
@@ -63,18 +74,42 @@ public class ImageUploadController {
 
 
     @PostMapping("/saveLabel/{userId}")
-    public ResponseEntity<String> saveLabel(@RequestParam("selectedLabel")  @PathVariable Long userId, AuthDto.UpdateDto updateDto) {
-
-        // 사용자 정보 업데이트 또는 저장 등의 작업 수행
-        try {
-            // 사용자 정보 업데이트 서비스 호출
-            String encodedPassword = encoder.encode(updateDto.getPassword()); // 비밀번호 암호화
-            userService.updateUser(userId, updateDto,encodedPassword);
-            return new ResponseEntity<>("Label saved successfully.", HttpStatus.OK);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new ResponseEntity<>("Failed to save label.", HttpStatus.INTERNAL_SERVER_ERROR);
+    public ResponseEntity<String> saveLabel(@PathVariable("userId") Long userId,
+                                            @RequestBody LabelDto.SaveLabelDto labelDto) {
+        User user = userService.findUserById(userId); // 사용자 ID로 사용자 검색
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found with id: " + userId);
         }
+
+        labelDto.setId(userId); // userId를 경로 변수로 설정
+
+        labelService.saveLabel(labelDto, user); // 사용자 ID 전달
+
+        return ResponseEntity.status(HttpStatus.CREATED).body("Label values saved successfully.");
+    }
+
+    @PutMapping("/updateLabel/{userId}/{labelId}")
+    public ResponseEntity<String> updateLabel(@PathVariable Long userId,
+                                              @PathVariable Long labelId,
+                                              @RequestBody LabelDto.UpdateLabelDto labelDto) {
+        // 여기서 userId와 labelId를 사용하여 라벨을 찾고, 그 라벨을 업데이트합니다.
+        // 이 부분은 실제 비즈니스 로직에 따라 구현되어야 합니다.
+
+        // LabelService를 사용하여 라벨을 업데이트합니다.
+        labelService.updateLabel(userId, labelId, labelDto);
+
+        // 업데이트가 성공했음을 응답합니다.
+        return ResponseEntity.ok("Label updated successfully");
+    }
+
+    @DeleteMapping("/deleteLabel/{userId}/{labelId}")
+    public ResponseEntity<String> deleteLabel(@PathVariable Long userId,
+                                              @PathVariable Long labelId) {
+        // LabelService를 사용하여 라벨을 삭제합니다.
+        labelService.deleteLabel(userId, labelId);
+
+        // 삭제가 성공했음을 응답합니다.
+        return ResponseEntity.ok("Label deleted successfully");
     }
 
 }

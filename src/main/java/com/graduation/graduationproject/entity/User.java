@@ -10,6 +10,7 @@ import org.springframework.data.annotation.Id;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 
 @Entity(name = "users")
 @Getter
@@ -31,7 +32,8 @@ public class User {
     private String phone;
     @Enumerated(EnumType.STRING)
     private Role role; // 사용자 권한
-    private String label;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Label> labels;
 
     // == 생성 메서드 == //
     public static User registerUser(AuthDto.SignupDto signupDto) {
@@ -45,18 +47,7 @@ public class User {
         user.address = signupDto.getAddress();
         user.phone = signupDto.getPhone();
         user.role = Role.USER;
-        user.label = signupDto.getLabel();
 
         return user;
-    }
-
-
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Long getId() {
-        return id;
     }
 }
