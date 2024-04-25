@@ -28,7 +28,7 @@ public class JwtTokenProvider implements InitializingBean {
     private final RedisService redisService;
 
     private static final String AUTHORITIES_KEY = "role";
-    private static final String EMAIL_KEY = "email";
+    private static final String USER_KEY = "username";
     private static final String url = "https://localhost:8080";
 
     private final String secretKey;
@@ -59,7 +59,7 @@ public class JwtTokenProvider implements InitializingBean {
     }
 
     @Transactional
-    public AuthDto.TokenDto createToken(String email, String authorities){
+    public AuthDto.TokenDto createToken(String username, String authorities){
         Long now = System.currentTimeMillis();
 
         String accessToken = Jwts.builder()
@@ -68,7 +68,7 @@ public class JwtTokenProvider implements InitializingBean {
                 .setExpiration(new Date(now + accessTokenValidityInMilliseconds))
                 .setSubject("access-token")
                 .claim(url, true)
-                .claim(EMAIL_KEY, email)
+                .claim(USER_KEY, username)
                 .claim(AUTHORITIES_KEY, authorities)
                 .signWith(signingKey, SignatureAlgorithm.HS512)
                 .compact();
@@ -100,9 +100,15 @@ public class JwtTokenProvider implements InitializingBean {
     }
 
     public Authentication getAuthentication(String token) {
-        String email = getClaims(token).get(EMAIL_KEY).toString();
-        UserDetailsImpl userDetailsImpl = userDetailsService.loadUserByUsername(email);
-        return new UsernamePasswordAuthenticationToken(userDetailsImpl, "", userDetailsImpl.getAuthorities());
+        Claims claims = getClaims(token);
+        if (claims != null && claims.get(USER_KEY) != null) {
+            String username = claims.get(USER_KEY).toString();
+            UserDetailsImpl userDetailsImpl = userDetailsService.loadUserByUsername(username);
+            return new UsernamePasswordAuthenticationToken(userDetailsImpl, "", userDetailsImpl.getAuthorities());
+        } else {
+            // 토큰이나 사용자 이름이 유효하지 않은 경우
+            return null;
+        }
     }
 
     public long getTokenExpirationTime(String token) {
@@ -169,5 +175,4 @@ public class JwtTokenProvider implements InitializingBean {
             return false;
         }
     }
-
 }
