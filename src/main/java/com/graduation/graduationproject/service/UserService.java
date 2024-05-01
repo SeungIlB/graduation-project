@@ -13,12 +13,17 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
+import javax.persistence.TypedQuery;
+
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class UserService {
 
     private final UserRepository userRepository;
+    private final EntityManager entityManager;
 
     @Transactional
     public void registerUser(AuthDto.SignupDto signupDto) {
@@ -80,5 +85,17 @@ public class UserService {
         }
 
         return null; // 현재 로그인한 사용자가 없거나 인증되지 않았을 경우 또는 UserDetails가 null인 경우
+    }
+
+    @Transactional(readOnly = true)
+    public Long findIdByUsername(String username) {
+        String jpql = "SELECT u.id FROM users u WHERE u.username = :username";
+        TypedQuery<Long> query = entityManager.createQuery(jpql, Long.class);
+        query.setParameter("username", username);
+        try {
+            return query.getSingleResult();
+        } catch (NoResultException e) {
+            throw new IllegalArgumentException("사용자를 찾을 수 없습니다: " + username);
+        }
     }
 }

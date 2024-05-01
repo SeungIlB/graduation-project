@@ -3,6 +3,7 @@ package com.graduation.graduationproject.controller;
 import com.graduation.graduationproject.dto.AuthDto;
 import com.graduation.graduationproject.entity.User;
 import com.graduation.graduationproject.repository.UserDetailsImpl;
+import com.graduation.graduationproject.repository.UserRepository;
 import com.graduation.graduationproject.service.AuthService;
 import com.graduation.graduationproject.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -42,6 +43,7 @@ public class AuthApiController {
     public ResponseEntity<?> login(@RequestBody @Valid AuthDto.LoginDto loginDto) {
         // User 등록 및 Refresh Token 저장
         AuthDto.TokenDto tokenDto = authService.login(loginDto);
+        Long userid = userService.findIdByUsername(loginDto.getUsername());
 
         // RT 저장
         HttpCookie httpCookie = ResponseCookie.from("refresh-token", tokenDto.getRefreshToken())
@@ -55,7 +57,7 @@ public class AuthApiController {
                 // AT 저장
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + tokenDto.getAccessToken()).body(Map.of(
                         "accessToken", tokenDto.getAccessToken(),
-                        "refreshToken", tokenDto.getRefreshToken()));
+                        "userid", userid));
     }
     @PutMapping("/update/{userId}")
     public ResponseEntity<String> updateUser(@PathVariable Long userId, @RequestBody AuthDto.UpdateDto updateDto) {
