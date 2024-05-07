@@ -5,6 +5,7 @@ import com.graduation.graduationproject.dto.LabelDto;
 import com.graduation.graduationproject.entity.Label;
 import com.graduation.graduationproject.entity.User;
 import com.graduation.graduationproject.repository.LabelRepository;
+import com.graduation.graduationproject.repository.UserDetailsImpl;
 import com.graduation.graduationproject.service.LabelService;
 import com.graduation.graduationproject.service.UserService;
 import com.graduation.graduationproject.service.VisionService;
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -75,7 +77,14 @@ public class ImageUploadController {
 
     @PostMapping("/saveLabel/{userId}")
     public ResponseEntity<String> saveLabel(@PathVariable("userId") Long userId,
-                                            @RequestBody LabelDto.SaveLabelDto labelDto) {
+                                            @RequestBody LabelDto.SaveLabelDto labelDto,@AuthenticationPrincipal UserDetailsImpl userDetails) {
+
+        Long loggedInUserId = userService.getLoggedInUserId(userDetails);
+
+        // 요청한 사용자와 현재 로그인한 사용자의 ID가 일치하지 않는 경우 권한이 없는 것으로 처리
+        if (!userId.equals(loggedInUserId)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
         User user = userService.findUserById(userId); // 사용자 ID로 사용자 검색
         if (user == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found with id: " + userId);
@@ -91,10 +100,13 @@ public class ImageUploadController {
     @PutMapping("/updateLabel/{userId}/{labelId}")
     public ResponseEntity<String> updateLabel(@PathVariable Long userId,
                                               @PathVariable Long labelId,
-                                              @RequestBody LabelDto.UpdateLabelDto labelDto) {
-        // 여기서 userId와 labelId를 사용하여 라벨을 찾고, 그 라벨을 업데이트합니다.
-        // 이 부분은 실제 비즈니스 로직에 따라 구현되어야 합니다.
+                                              @RequestBody LabelDto.UpdateLabelDto labelDto,@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        Long loggedInUserId = userService.getLoggedInUserId(userDetails);
 
+        // 요청한 사용자와 현재 로그인한 사용자의 ID가 일치하지 않는 경우 권한이 없는 것으로 처리
+        if (!userId.equals(loggedInUserId)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
         // LabelService를 사용하여 라벨을 업데이트합니다.
         labelService.updateLabel(userId, labelId, labelDto);
 
@@ -104,7 +116,13 @@ public class ImageUploadController {
 
     @DeleteMapping("/deleteLabel/{userId}/{labelId}")
     public ResponseEntity<String> deleteLabel(@PathVariable Long userId,
-                                              @PathVariable Long labelId) {
+                                              @PathVariable Long labelId,@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        Long loggedInUserId = userService.getLoggedInUserId(userDetails);
+
+        // 요청한 사용자와 현재 로그인한 사용자의 ID가 일치하지 않는 경우 권한이 없는 것으로 처리
+        if (!userId.equals(loggedInUserId)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
         // LabelService를 사용하여 라벨을 삭제합니다.
         labelService.deleteLabel(userId, labelId);
 
