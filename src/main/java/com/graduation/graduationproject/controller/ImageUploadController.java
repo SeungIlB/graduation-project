@@ -2,7 +2,6 @@ package com.graduation.graduationproject.controller;
 
 
 import com.graduation.graduationproject.dto.LabelDto;
-import com.graduation.graduationproject.entity.Label;
 import com.graduation.graduationproject.entity.User;
 import com.graduation.graduationproject.repository.LabelRepository;
 import com.graduation.graduationproject.repository.UserDetailsImpl;
@@ -10,24 +9,25 @@ import com.graduation.graduationproject.service.LabelService;
 import com.graduation.graduationproject.service.UserService;
 import com.graduation.graduationproject.service.VisionService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.IOException;
-import java.security.Principal;
 import java.util.List;
 
 @RestController
 public class ImageUploadController {
+
+
+    @Value("${upload.dir}")
+    private String uploadDir;
 
     private final VisionService googleVisionService;
     @Autowired
@@ -58,6 +58,9 @@ public class ImageUploadController {
         }
 
         try {
+            // 이미지를 로컬에 저장
+            String fileName = saveImage(file);
+
             // 이미지 파일을 바이트 배열로 변환하여 Google Vision API로 전송하여 라벨 분석
             byte[] imageBytes = file.getBytes();
             List<String> labels = googleVisionService.detectLabels(imageBytes);
@@ -70,9 +73,30 @@ public class ImageUploadController {
         } catch (IOException e) {
             e.printStackTrace();
             return new ResponseEntity<>("Failed to process image.", HttpStatus.INTERNAL_SERVER_ERROR);
-
         }
     }
+
+    // 이미지를 로컬에 저장하는 메서드
+    private String saveImage(MultipartFile file) throws IOException {
+        // 업로드 디렉토리가 없으면 생성
+        File uploadDirectory = new File(uploadDir);
+        if (!uploadDirectory.exists()) {
+            uploadDirectory.mkdirs();
+        }
+
+        // 파일명
+        String fileName = file.getOriginalFilename();
+        // 파일 저장 경로
+        String filePath = uploadDir + File.separator + fileName;
+
+        // 이미지를 저장할 파일 생성
+        File dest = new File(filePath);
+        // 이미지 저장
+        file.transferTo(dest);
+
+        return fileName;
+    }
+
 
 
     @PostMapping("/saveLabel/{userId}")
@@ -128,6 +152,13 @@ public class ImageUploadController {
 
         // 삭제가 성공했음을 응답합니다.
         return ResponseEntity.ok("Label deleted successfully");
+    }
+
+    public ImageUploadController(VisionService googleVisionService, UserService userService, BCryptPasswordEncoder encoder, LabelService labelService) {
+        this.googleVisionService = googleVisionService;
+        this.userService = userService;
+        this.encoder = encoder;
+        this.labelService = labelService;
     }
 
 }
