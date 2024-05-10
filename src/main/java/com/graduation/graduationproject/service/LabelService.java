@@ -63,4 +63,15 @@ public class LabelService {
         // 라벨을 삭제합니다.
         labelRepository.delete(label);
     }
+    public boolean checkIfUserIdExists(Long userId) {
+        // 주어진 userId 값을 사용하여 레코드를 조회합니다.
+        Label label = labelRepository.findByUserId(userId);
+
+        // 조회된 레코드가 null이면 해당 userId가 존재하지 않으므로 false 반환
+        if (label == null) {
+            return false;
+        }
+        // 조회된 레코드가 null이 아니면 해당 userId가 존재하므로 true 반환
+        return true;
+    }
 }

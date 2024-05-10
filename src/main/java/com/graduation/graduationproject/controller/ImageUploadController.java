@@ -161,4 +161,16 @@ public class ImageUploadController {
         this.labelService = labelService;
     }
 
+    @GetMapping("absenceLabel/{userId}")
+    public ResponseEntity<String> absenceLabel(@PathVariable Long userId,
+                                             @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        Long loggedInUserId = userService.getLoggedInUserId(userDetails);
+
+        // 요청한 사용자와 현재 로그인한 사용자의 ID가 일치하지 않는 경우 권한이 없는 것으로 처리
+        if (!userId.equals(loggedInUserId)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        boolean result = labelService.checkIfUserIdExists(userId);
+        return ResponseEntity.ok(String.valueOf(result));
+    }
 }

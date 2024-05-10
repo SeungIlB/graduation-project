@@ -9,6 +9,7 @@ version = '0.0.1-SNAPSHOT'
 
 java {
 	sourceCompatibility = '11'
+	modularity.inferModulePath = true
 }
 
 configurations {
@@ -19,6 +20,7 @@ configurations {
 
 repositories {
 	mavenCentral()
+
 }
 
 dependencies {
@@ -50,8 +52,8 @@ dependencies {
 	runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.1'
 	// google visionService
 	implementation 'com.google.cloud:google-cloud-vision:3.35.0'
-	// math
-	implementation group: 'org.apache.commons', name: 'commons-text', version: '1.9' // 최신 버전을 사용할 수도 있습니다
+	// word embedding
+
 
 }
 
