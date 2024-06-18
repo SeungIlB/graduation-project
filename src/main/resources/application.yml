@@ -21,7 +21,8 @@ spring:
     properties:
       hibernate:
         format_sql: true
-
+file:
+  upload-dir: C:/Users/82109/OneDrive/바탕 화면/graduation-project/src/main/resources/images
 jwt:
   secret: c3ByaW5nYm9vdC1qd3QtdHV0b3JpYWwtc3ByaW5nYm9vdC1qd3QtdHV0b3JpYWwtc3ByaW5nYm9vdC1qd3QtdHV0b3JpYWwK
   access-token-validity-in-seconds: 86400000 # 24??

@@ -1,37 +1,107 @@
 package com.graduation.graduationproject.service;
 
+
+
 import com.graduation.graduationproject.entity.Image;
 import com.graduation.graduationproject.entity.User;
 import com.graduation.graduationproject.repository.ImageRepository;
 import com.graduation.graduationproject.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.core.io.ByteArrayResource;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Random;
 
 @Service
 public class ImageService {
 
-    @Autowired
-    private ImageRepository imageRepository;
+    private final RestTemplate restTemplate;
+    private final ImageRepository imageRepository;
+    private final UserRepository userRepository;
 
-    @Autowired
-    private UserRepository userRepository;
+    @Value("${file.upload-dir}")
+    private String uploadDir;
 
-    public void saveImage(Long userId, MultipartFile file) throws IOException {
-        User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("Invalid user ID"));
-
-        Image image = new Image();
-        image.setName(file.getOriginalFilename());
-        image.setData(file.getBytes());
-        image.setUser(user);
-
-        imageRepository.save(image);
+    public ImageService(RestTemplate restTemplate, ImageRepository imageRepository, UserRepository userRepository) {
+        this.restTemplate = restTemplate;
+        this.imageRepository = imageRepository;
+        this.userRepository = userRepository;
     }
 
-    public List<Image> getImagesByUserId(Long userId) {
-        return imageRepository.findByUserId(userId);
+    public Map<String, Object> predict(Long userId, String season, MultipartFile image) throws Exception {
+        String url = "http://localhost:5000/predict";
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+
+        Map<String, Object> body = new HashMap<>();
+        body.put("season", season);
+        body.put("image", new ByteArrayResource(image.getBytes()) {
+            @Override
+            public String getFilename() {
+                return image.getOriginalFilename();
+            }
+        });
+
+        HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<>(body, headers);
+        ResponseEntity<Map> response = restTemplate.postForEntity(url, requestEntity, Map.class);
+
+        if (response.getStatusCode().is2xxSuccessful()) {
+            Map<String, Object> result = response.getBody();
+            saveImage(userId, image, season, (String) result.get("class"));
+            return result;
+        } else {
+            throw new Exception("Prediction failed");
+        }
+    }
+
+    private void saveImage(Long userId, MultipartFile image, String season, String predictedClass) throws Exception {
+        String filename = image.getOriginalFilename();
+        String filepath = uploadDir + File.separator + filename;
+
+        // 이미지 파일을 지정된 경로에 저장
+        File file = new File(filepath);
+        try (FileOutputStream fos = new FileOutputStream(file)) {
+            fos.write(image.getBytes());
+        } catch (IOException e) {
+            throw new Exception("Failed to save image", e);
+        }
+
+        // 데이터베이스에 이미지 정보 저장
+        Optional<User> userOptional = userRepository.findById(userId);
+        if (!userOptional.isPresent()) {
+            throw new Exception("User not found");
+        }
+
+        Image img = new Image();
+        img.setUser(userOptional.get()); // 사용자 설정
+        img.setFilename(filename);
+        img.setSeason(season);
+        img.setPredictedClass(predictedClass);
+        img.setFilepath(filepath);
+        img.setImageData(image.getBytes());
+        imageRepository.save(img);
+    }
+
+    public Optional<Image> getRandomImage() {
+        List<Image> images = imageRepository.findAll();
+        if (images.isEmpty()) {
+            return Optional.empty();
+        }
+        Random rand = new Random();
+        return Optional.of(images.get(rand.nextInt(images.size())));
     }
 }

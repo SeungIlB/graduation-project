@@ -12,30 +12,29 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.List;
 
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.Map;
+import java.util.Optional;
+
 @RestController
 @RequestMapping("/images")
 public class ImageController {
 
-    @Autowired
-    private ImageService imageService;
+    private final ImageService imageService;
 
-    @PostMapping("/upload")
-    public ResponseEntity<String> uploadImage(@RequestParam("userId") Long userId, @RequestParam("file") MultipartFile file) {
-        try {
-            imageService.saveImage(userId, file);
-            return ResponseEntity.ok("Image uploaded successfully");
-        } catch (IOException e) {
-            return ResponseEntity.status(500).body("Image upload failed");
-        }
+    public ImageController(ImageService imageService) {
+        this.imageService = imageService;
     }
 
-    @GetMapping("/{userId}")
-    public ResponseEntity<List<Image>> getImagesByUserId(@PathVariable Long userId) {
-        List<Image> images = imageService.getImagesByUserId(userId);
-        if (!images.isEmpty()) {
-            return ResponseEntity.ok(images);
-        } else {
-            return ResponseEntity.status(404).body(null);
-        }
+    @PostMapping("/predict/{userId}")
+    public Map<String, Object> predict(@PathVariable("userId") Long userId, @RequestParam("season") String season, @RequestParam("image") MultipartFile image) throws Exception {
+        return imageService.predict(userId, season, image);
+    }
+
+    @GetMapping("/random")
+    public Optional<Image> getRandomImage() {
+        return imageService.getRandomImage();
     }
 }
