@@ -27,6 +27,3 @@ jwt:
   access-token-validity-in-seconds: 86400000 # 24??
   refresh-token-validity-in-seconds: 604800000 # 7?
 
-# 파일 업로드 디렉토리 설정
-upload:
-  dir: C:\Users\82109\OneDrive\바탕 화면\graduation-project/src/main/resources/images

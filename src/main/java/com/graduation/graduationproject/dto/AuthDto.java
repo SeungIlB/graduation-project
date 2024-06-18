@@ -1,11 +1,8 @@
 package com.graduation.graduationproject.dto;
 
-import com.graduation.graduationproject.entity.Label;
-import com.graduation.graduationproject.entity.User;
 import lombok.*;
 
 import java.util.Date;
-import java.util.List;
 
 public class AuthDto {
 
