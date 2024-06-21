@@ -1,5 +1,6 @@
 package com.graduation.graduationproject.service;
 
+import com.graduation.graduationproject.dto.ImageDto;
 import com.graduation.graduationproject.entity.Image;
 import com.graduation.graduationproject.entity.User;
 import com.graduation.graduationproject.repository.ImageRepository;
@@ -25,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 @Service
 public class ImageService {
@@ -107,5 +109,18 @@ public class ImageService {
         }
         Random rand = new Random();
         return Optional.of(images.get(rand.nextInt(images.size())));
+    }
+    public List<ImageDto> getImageDtosByUserId(Long userId) {
+        List<Image> images = imageRepository.findByUserId(userId);
+        return images.stream().map(this::convertToDto).collect(Collectors.toList());
+    }
+    private ImageDto convertToDto(Image image) {
+        ImageDto imageDto = new ImageDto();
+        imageDto.setId(image.getId());
+        imageDto.setFilename(image.getFilename());
+        imageDto.setSeason(image.getSeason());
+        imageDto.setFilepath(image.getFilepath());
+        imageDto.setPredictedClass(image.getPredictedClass());
+        return imageDto;
     }
 }

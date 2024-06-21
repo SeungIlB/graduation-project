@@ -1,6 +1,7 @@
 package com.graduation.graduationproject.entity;
 
 
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.Getter;
 import org.springframework.data.annotation.Id;
@@ -11,6 +12,7 @@ import javax.validation.constraints.NotNull;
 @Entity
 @Setter
 @Getter
+@NoArgsConstructor
 public class Image {
     @javax.persistence.Id
     @Id
@@ -28,7 +30,8 @@ public class Image {
 
     @Lob
     private byte[] imageData;
-    @ManyToOne
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 
@@ -39,5 +42,6 @@ public class Image {
     public Long getId() {
         return id;
     }
+
 
 }

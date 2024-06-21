@@ -1,5 +1,6 @@
 package com.graduation.graduationproject.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.graduation.graduationproject.dto.AuthDto;
 import com.graduation.graduationproject.dto.Role;
 import lombok.AccessLevel;
@@ -32,7 +33,8 @@ public class User {
     private String phone;
     @Enumerated(EnumType.STRING)
     private Role role; // 사용자 권한
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<Image> images;
 
     // == 생성 메서드 == //
