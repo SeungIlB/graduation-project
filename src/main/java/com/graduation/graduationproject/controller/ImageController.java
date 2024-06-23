@@ -31,6 +31,7 @@ import org.slf4j.LoggerFactory;
 @RequiredArgsConstructor
 public class ImageController {
     private final ImageService imageService;
+    private final UserService userService;
 
     @PostMapping(value = "/predict/{userId}/{season}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Map<String, Object>> predict(@PathVariable("userId") Long userId,

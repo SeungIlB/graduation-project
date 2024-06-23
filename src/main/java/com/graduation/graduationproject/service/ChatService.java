@@ -23,25 +23,35 @@ import java.util.UUID;
 public class ChatService {
     private final ChatRepository chatRepository;
     private final WebSocketChatHandler webSocketChatHandler;
-    private final ObjectMapper objectMapper;
 
     public List<ChatRoom> findAll() {
         return chatRepository.findAll();
+    }
+
+    public List<ChatRoom> findAllRooms() {
+        return findAll();
     }
 
     public Optional<ChatRoom> findRoomById(Long roomId) {
         return chatRepository.findById(roomId);
     }
 
-    public ChatRoom createRoom(String predictedClass) {
+    public Optional<ChatRoom> findRoomByPredictedClass(String predictedClass) {
+        return chatRepository.findByName(predictedClass);
+    }
+
+    public ChatRoom createOrGetRoomByPredictedClass(String predictedClass) {
+        Optional<ChatRoom> existingRoom = findRoomByPredictedClass(predictedClass);
+        if (existingRoom.isPresent()) {
+            return existingRoom.get();
+        }
+
         String roomId = UUID.randomUUID().toString();
         ChatRoom chatRoom = ChatRoom.builder()
                 .roomId(roomId)
                 .name(predictedClass)
                 .build();
-        ChatRoom savedChatRoom = chatRepository.save(chatRoom);
-        log.info("Created chat room: {}", savedChatRoom);
-        return savedChatRoom;
+        return chatRepository.save(chatRoom);
     }
 
     public void handleMessage(WebSocketSession session, ChatDTO chatMessageDto) {
@@ -71,7 +81,7 @@ public class ChatService {
 
     public <T> void sendMessage(WebSocketSession session, T message) {
         try {
-            String payload = objectMapper.writeValueAsString(message);
+            String payload = new ObjectMapper().writeValueAsString(message);
             session.sendMessage(new TextMessage(payload));
         } catch (IOException e) {
             log.error("Error while sending message: ", e);

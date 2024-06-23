@@ -18,4 +18,6 @@ public class ImageDto {
     private String predictedClass;
 
     private String filepath; // 파일 절대 경로 필드 추가
+    private String nickname; // 사용자 닉네임 추가
+
 }

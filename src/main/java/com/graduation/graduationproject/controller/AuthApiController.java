@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
@@ -200,5 +201,39 @@ public class AuthApiController {
         }
 
         return ResponseEntity.ok(images);
+    }
+    @GetMapping("/images/compare")
+    public ResponseEntity<?> comparePredictedClass(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        if (userDetails == null) {
+            return ResponseEntity.status(401).body("Unauthorized");
+        }
+
+        Long userId = userDetails.getId();
+        User user = userService.findUserById(userId);
+        if (user == null) {
+            return ResponseEntity.status(404).body("User not found");
+        }
+
+        String predictedClass = user.getImages().isEmpty() ? null : user.getImages().get(0).getPredictedClass();
+        if (predictedClass == null) {
+            return ResponseEntity.status(404).body("Predicted class not found for the user");
+        }
+
+        List<Image> matchingImages = imageService.findByPredictedClass(predictedClass);
+        List<ImageDto> imageDtos = matchingImages.stream()
+                .filter(img -> !img.getUser().getId().equals(userId))
+                .map(img -> {
+                    ImageDto dto = new ImageDto();
+                    dto.setId(img.getId());
+                    dto.setFilename(img.getFilename());
+                    dto.setSeason(img.getSeason());
+                    dto.setPredictedClass(img.getPredictedClass());
+                    dto.setFilepath(img.getFilepath());
+                    dto.setNickname(img.getUser().getNickname()); // Assuming ImageDto has a nickname field
+                    return dto;
+                })
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(imageDtos);
     }
 }

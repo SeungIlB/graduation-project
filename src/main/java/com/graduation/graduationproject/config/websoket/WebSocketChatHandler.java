@@ -11,6 +11,7 @@ import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import java.io.IOException;
+import java.security.Principal;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -25,8 +26,14 @@ public class WebSocketChatHandler extends TextWebSocketHandler {
 
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
-        log.info("{} 연결됨", session.getId());
-        sessions.add(session);
+        Principal principal = session.getPrincipal();
+        if (principal != null && principal.getName() != null) {
+            log.info("User {} connected", principal.getName());
+            sessions.add(session);
+        } else {
+            session.close();
+            log.warn("Connection closed due to unauthorized access");
+        }
     }
 
     @Override
@@ -34,13 +41,19 @@ public class WebSocketChatHandler extends TextWebSocketHandler {
         String payload = message.getPayload();
         log.info("payload {}", payload);
 
-        ChatDTO chatMessageDto = mapper.readValue(payload, ChatDTO.class);
-        // 메세지 처리를 ChatService에서 수행하도록 넘김
+        Principal principal = session.getPrincipal();
+        if (principal != null && principal.getName() != null) {
+            ChatDTO chatMessageDto = mapper.readValue(payload, ChatDTO.class);
+            // handle message logic here
+        } else {
+            session.close();
+            log.warn("Message handling failed due to unauthorized access");
+        }
     }
 
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
-        log.info("{} 연결 끊김", session.getId());
+        log.info("{} disconnected", session.getId());
         sessions.remove(session);
     }
 

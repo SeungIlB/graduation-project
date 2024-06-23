@@ -100,4 +100,11 @@ public class UserService {
             throw new IllegalArgumentException("사용자를 찾을 수 없습니다: " + username);
         }
     }
+    public String getUserPredictedClass(Long userId) {
+        User user = findUserById(userId);
+        if (user != null && user.getImages() != null && !user.getImages().isEmpty()) {
+            return user.getImages().get(0).getPredictedClass();
+        }
+        return null;
+    }
 }

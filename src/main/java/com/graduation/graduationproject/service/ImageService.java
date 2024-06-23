@@ -1,10 +1,8 @@
 package com.graduation.graduationproject.service;
 
 import com.graduation.graduationproject.dto.ImageDto;
-import com.graduation.graduationproject.entity.ChatRoom;
 import com.graduation.graduationproject.entity.Image;
 import com.graduation.graduationproject.entity.User;
-import com.graduation.graduationproject.repository.ChatRepository;
 import com.graduation.graduationproject.repository.ImageRepository;
 import com.graduation.graduationproject.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,17 +33,15 @@ public class ImageService {
     private final RestTemplate restTemplate;
     private final ImageRepository imageRepository;
     private final UserRepository userRepository;
-    private final ChatService chatService;
 
     @Value("${file.upload-dir}")
     private String uploadDir;
 
     @Autowired
-    public ImageService(RestTemplate restTemplate, ImageRepository imageRepository, UserRepository userRepository, ChatService chatService) {
+    public ImageService(RestTemplate restTemplate, ImageRepository imageRepository, UserRepository userRepository) {
         this.restTemplate = restTemplate;
         this.imageRepository = imageRepository;
         this.userRepository = userRepository;
-        this.chatService = chatService;
     }
 
     public Map<String, Object> predict(Long userId, String season, MultipartFile image) throws Exception {
@@ -71,7 +67,6 @@ public class ImageService {
             if (result != null && result.containsKey("class")) {
                 String predictedClass = (String) result.get("class");
                 saveImage(userId, image, season, predictedClass);
-                chatService.createRoom(predictedClass); // 채팅방 생성
                 return result;
             } else {
                 throw new Exception("No response body");
@@ -115,12 +110,14 @@ public class ImageService {
         Random rand = new Random();
         return Optional.of(images.get(rand.nextInt(images.size())));
     }
+
     public List<ImageDto> getImageDtosByUserId(Long userId) {
         List<Image> images = imageRepository.findByUserId(userId);
         return images.stream()
                 .map(this::convertToDto)
                 .collect(Collectors.toList());
     }
+
     private ImageDto convertToDto(Image image) {
         return ImageDto.builder()
                 .id(image.getId())
@@ -130,5 +127,7 @@ public class ImageService {
                 .filepath(image.getFilepath())
                 .build();
     }
-
+    public List<Image> findByPredictedClass(String predictedClass) {
+        return imageRepository.findByPredictedClass(predictedClass);
+    }
 }

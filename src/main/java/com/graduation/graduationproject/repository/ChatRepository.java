@@ -11,4 +11,6 @@ import java.util.Optional;
 @Repository
 public interface ChatRepository extends JpaRepository<ChatRoom, Long> {
     Optional<ChatRoom> findByRoomId(String roomId);
+    Optional<ChatRoom> findByName(String name);
+
 }

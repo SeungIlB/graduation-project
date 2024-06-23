@@ -17,16 +17,16 @@ public class ChatController {
 
     private final ChatService service;
 
-    @PostMapping
-    public ResponseEntity<ChatRoom> createRoom(@RequestParam String name){
-        ChatRoom chatRoom = service.createRoom(name);
-        log.info("Created chat room with ID: {}, Name: {}", chatRoom.getRoomId(), chatRoom.getName());
+    @PostMapping("/room")
+    public ResponseEntity<ChatRoom> createOrGetRoom(@RequestParam String predictedClass){
+        ChatRoom chatRoom = service.createOrGetRoomByPredictedClass(predictedClass);
+        log.info("Chat room ID: {}, Name: {}", chatRoom.getRoomId(), chatRoom.getName());
         return ResponseEntity.ok(chatRoom);
     }
 
-    @GetMapping
+    @GetMapping("/rooms")
     public ResponseEntity<List<ChatRoom>> findAllRooms(){
-        List<ChatRoom> rooms = service.findAll();
+        List<ChatRoom> rooms = service.findAllRooms();
         return ResponseEntity.ok(rooms);
     }
 }
