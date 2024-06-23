@@ -1,9 +1,14 @@
 package com.graduation.graduationproject.dto;
 
-import lombok.Setter;
-import lombok.Getter;
+import lombok.*;
+
 @Getter
 @Setter
+@Builder
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+
 public class ImageDto {
     private Long id;
     private String filename;

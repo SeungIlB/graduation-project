@@ -1,47 +1,47 @@
-package com.graduation.graduationproject.entity;
+    package com.graduation.graduationproject.entity;
 
 
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.Getter;
-import org.springframework.data.annotation.Id;
+    import lombok.NoArgsConstructor;
+    import lombok.Setter;
+    import lombok.Getter;
+    import org.springframework.data.annotation.Id;
 
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
+    import javax.persistence.*;
+    import javax.validation.constraints.NotNull;
 
-@Entity
-@Setter
-@Getter
-@NoArgsConstructor
-public class Image {
-    @javax.persistence.Id
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Entity
+    @Setter
+    @Getter
+    @NoArgsConstructor
+    public class Image {
+        @javax.persistence.Id
+        @Id
+        @GeneratedValue(strategy = GenerationType.IDENTITY)
+        private Long id;
 
 
-    private String filename;
+        private String filename;
 
-    private String season;
+        private String season;
 
-    private String predictedClass;
+        private String predictedClass;
 
-    private String filepath; // 파일 절대 경로 필드 추가
+        private String filepath; // 파일 절대 경로 필드 추가
 
-    @Lob
-    private byte[] imageData;
+        @Lob
+        private byte[] imageData;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private User user;
+        @ManyToOne(fetch = FetchType.LAZY)
+        @JoinColumn(name = "user_id")
+        private User user;
 
-    public void setId(Long id) {
-        this.id = id;
+        public void setId(Long id) {
+            this.id = id;
+        }
+
+        public Long getId() {
+            return id;
+        }
+
+
     }
-
-    public Long getId() {
-        return id;
-    }
-
-
-}

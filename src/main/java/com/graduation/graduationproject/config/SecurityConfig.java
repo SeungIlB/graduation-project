@@ -64,7 +64,7 @@ public class SecurityConfig {
                 .and()
                 .authorizeRequests() // '인증'이 필요하다
                 .antMatchers("/auth/mypage/**").authenticated() // 마이페이지 인증 필요
-                .antMatchers("/images/details/**").authenticated() // 이미지 보기
+                .antMatchers("/chat/**").authenticated() // 이미지 보기
                 .antMatchers("/api/admin/**").hasRole("ADMIN") // 관리자 페이지
                 .anyRequest().permitAll()
 

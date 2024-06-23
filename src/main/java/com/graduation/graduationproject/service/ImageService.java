@@ -1,12 +1,13 @@
 package com.graduation.graduationproject.service;
 
 import com.graduation.graduationproject.dto.ImageDto;
+import com.graduation.graduationproject.entity.ChatRoom;
 import com.graduation.graduationproject.entity.Image;
 import com.graduation.graduationproject.entity.User;
+import com.graduation.graduationproject.repository.ChatRepository;
 import com.graduation.graduationproject.repository.ImageRepository;
 import com.graduation.graduationproject.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpEntity;
@@ -34,15 +35,17 @@ public class ImageService {
     private final RestTemplate restTemplate;
     private final ImageRepository imageRepository;
     private final UserRepository userRepository;
+    private final ChatService chatService;
 
     @Value("${file.upload-dir}")
     private String uploadDir;
 
     @Autowired
-    public ImageService(@Qualifier("customRestTemplate") RestTemplate restTemplate, ImageRepository imageRepository, UserRepository userRepository) {
+    public ImageService(RestTemplate restTemplate, ImageRepository imageRepository, UserRepository userRepository, ChatService chatService) {
         this.restTemplate = restTemplate;
         this.imageRepository = imageRepository;
         this.userRepository = userRepository;
+        this.chatService = chatService;
     }
 
     public Map<String, Object> predict(Long userId, String season, MultipartFile image) throws Exception {
@@ -66,7 +69,9 @@ public class ImageService {
         if (response.getStatusCode().is2xxSuccessful()) {
             Map<String, Object> result = response.getBody();
             if (result != null && result.containsKey("class")) {
-                saveImage(userId, image, season, (String) result.get("class"));
+                String predictedClass = (String) result.get("class");
+                saveImage(userId, image, season, predictedClass);
+                chatService.createRoom(predictedClass); // 채팅방 생성
                 return result;
             } else {
                 throw new Exception("No response body");
@@ -112,15 +117,18 @@ public class ImageService {
     }
     public List<ImageDto> getImageDtosByUserId(Long userId) {
         List<Image> images = imageRepository.findByUserId(userId);
-        return images.stream().map(this::convertToDto).collect(Collectors.toList());
+        return images.stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
     }
     private ImageDto convertToDto(Image image) {
-        ImageDto imageDto = new ImageDto();
-        imageDto.setId(image.getId());
-        imageDto.setFilename(image.getFilename());
-        imageDto.setSeason(image.getSeason());
-        imageDto.setFilepath(image.getFilepath());
-        imageDto.setPredictedClass(image.getPredictedClass());
-        return imageDto;
+        return ImageDto.builder()
+                .id(image.getId())
+                .filename(image.getFilename())
+                .season(image.getSeason())
+                .predictedClass(image.getPredictedClass())
+                .filepath(image.getFilepath())
+                .build();
     }
+
 }
